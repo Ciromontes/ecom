@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AdminService } from '../../service/admin.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-dashboard',
@@ -13,13 +14,15 @@ export class DashboardComponent {
   searchProductForm!: FormGroup;
 
   constructor(private adminService: AdminService,
-    private fb: FormBuilder){}
+    private fb: FormBuilder,
+    private snackBar: MatSnackBar,){}
     ngOnInit(){
       this.getAllProducts();
       this.searchProductForm = this.fb.group({
         title: [null, [Validators.required]]
       })
     }
+
   getAllProducts(){
     this.products = [];
     this.adminService.getAllProducts().subscribe(res =>{
@@ -42,7 +45,22 @@ export class DashboardComponent {
       console.log(this.products)
     })
   }
+  deleteProduct(productId:any){
+    this.adminService.deleteProduct(productId).subscribe(res=>{
+      if(res.body == null){
+        this.snackBar.open('Product Deleted Successfully!', 'Close',{
+          duration:5000
+        });
+        this.getAllProducts();
+      }else{
+        this.snackBar.open(res.message, 'Close', {
+          duration:5000,
+          panelClass: 'error-snackbar'
+        });
+      }
+    })
 
+  }
 }
 
 
