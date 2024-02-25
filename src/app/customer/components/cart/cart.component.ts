@@ -3,6 +3,7 @@ import { CustomerService } from '../../services/customer.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { PlaceOrderComponent } from '../place-order/place-order.component';
 
 @Component({
   selector: 'app-cart',
@@ -58,4 +59,19 @@ export class CartComponent {
       this.getCart();
     })
   }
+
+  decreaseQuantity(productId: any){
+    this.customerService.decreaseProductQuantity(productId).subscribe(res =>{
+      this.snackbar.open('Product quantity decreased.', 'Close', {duration:5000});
+      this.getCart();
+    })
+  }
+  placeOrder(){
+    this.dialog.open(PlaceOrderComponent);
+  }
+
+
+
 }
+
+
